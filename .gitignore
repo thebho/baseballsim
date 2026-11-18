@@ -55,3 +55,47 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Node.js / npm
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Virtual environments
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE specific
+.vscode/
+.idea/
+*.iml
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
