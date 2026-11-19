@@ -27,6 +27,7 @@ A complete menu-driven interface for non-programmatic users:
 ### 3. Enhanced Player Classes
 Updated Pitcher and Batter classes with:
 - Age attribute storage
+- Jersey number, position, team, and status attributes
 - String representation (__str__ methods) for better display
 - Python 3 compatibility
 
@@ -54,18 +55,19 @@ Complete API documentation in PLAYER_MANAGEMENT.md covering:
 ✓ **Displayable**: Formatted output showing all player details
 ✓ **Well-Tested**: Comprehensive test coverage
 ✓ **Well-Documented**: Complete API documentation
+✓ **Simplified Model**: Core player attributes without career statistics
 
 ## Files Modified/Created
 
 ### Modified:
-- **atbat.py**: Added PlayerManager class, updated to Python 3
+- **atbat.py**: Added PlayerManager class, updated to Python 3, removed career statistics
+- **player_manager_ui.py**: Updated to remove statistics input fields
+- **PLAYER_MANAGEMENT.md**: Updated documentation to reflect simplified model
+- **IMPLEMENTATION_SUMMARY.md**: This file
 
 ### Created:
-- **player_manager_ui.py**: Interactive user interface
 - **test_player_manager.py**: Unit tests
 - **test_ui.py**: Integration tests
-- **PLAYER_MANAGEMENT.md**: API documentation
-- **IMPLEMENTATION_SUMMARY.md**: This file
 
 ## Usage
 
@@ -74,8 +76,11 @@ Complete API documentation in PLAYER_MANAGEMENT.md covering:
 from atbat import PlayerManager
 
 manager = PlayerManager()
-pitcher = manager.addPitcher('Clayton', 'Kershaw', 30, 'Left', 'Right', 95)
-batter = manager.addBatter('Mike', 'Trout', 28, 'Right', 'Right', 92)
+pitcher = manager.addPitcher('Clayton', 'Kershaw', 30, 'Left', 'Right', 95,
+                            jerseyNumber=22, team='Los Angeles Dodgers')
+batter = manager.addBatter('Mike', 'Trout', 28, 'Right', 'Right', 92,
+                          jerseyNumber=27, position='Outfield',
+                          team='Los Angeles Angels')
 manager.listPlayers()
 ```
 
@@ -100,7 +105,6 @@ All tests pass successfully:
 
 Potential improvements:
 - Persistent storage (JSON/database)
-- Player statistics tracking
 - Team management
 - Game simulation with stored players
 - Player performance history
