@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Test script for PlayerManager functionality"""
+"""Test script for PlayerManager functionality with enhanced player details"""
 
 # Test the PlayerManager class without importing the full module
 import sys
@@ -10,27 +10,45 @@ class Player(object):
     """
     Creates a MLB player
     """
-    def __init__(self,firstName,lastName,throwingHand,battingHand):
+    def __init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber=0, position="", team="", status="Active"):
         """
         battingHand='Left','Right','Switch'
         throwingHand='Left','Right'
+        position: Player's position (e.g., 'Pitcher', 'Catcher', 'Outfield')
+        team: Team name
+        status: 'Active' or 'Injured'
         """
-        self.name= str(firstName) + str(lastName)
-        self.throwingHand=throwingHand
-        self.battingHand=battingHand
+        self.name = str(firstName) + str(lastName)
+        self.firstName = firstName
+        self.lastName = lastName
+        self.throwingHand = throwingHand
+        self.battingHand = battingHand
+        self.jerseyNumber = jerseyNumber
+        self.position = position
+        self.team = team
+        self.status = status
     
 class Pitcher(Player):
     """
     A MLB pitcher. Subclass of Player
     """
-    def __init__(self,firstName,lastName,age,throwingHand,battingHand,pitcherRating):
+    def __init__(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
+                 jerseyNumber=0, team="", status="Active", wins=0, losses=0, era=0.0, strikeouts=0):
         """
         Creates a Pitcher Instance.
         Rating=an Integer 1-99
+        wins: Career wins
+        losses: Career losses
+        era: Earned Run Average
+        strikeouts: Career strikeouts
         """
-        Player.__init__(self,firstName,lastName,throwingHand,battingHand)
-        self.energy=100
-        self.rating=pitcherRating
+        Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, "Pitcher", team, status)
+        self.age = age
+        self.rating = pitcherRating
+        self.wins = wins
+        self.losses = losses
+        self.era = era
+        self.strikeouts = strikeouts
 
     def getRating(self):
         return self.rating
@@ -39,13 +57,19 @@ class Batter(Player):
     """
     A MLB batter. Subclass of Player
     """
-    def __init__(self,firstName,lastName,age,throwingHand,battingHand,contact):
+    def __init__(self, firstName, lastName, age, throwingHand, battingHand, contact,
+                 jerseyNumber=0, position="", team="", status="Active", hits=0, strikeouts=0):
         """
         Creates a Batter Instance.
         Contact= An integer 1-99
+        hits: Career hits
+        strikeouts: Career strikeouts
         """
-        Player.__init__(self,firstName,lastName,throwingHand,battingHand)
-        self.contact=contact
+        Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, position, team, status)
+        self.age = age
+        self.contact = contact
+        self.hits = hits
+        self.strikeouts = strikeouts
 
     def getRating(self):
         """
@@ -63,43 +87,25 @@ class PlayerManager(object):
         """
         self.players = {}
     
-    def addPitcher(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating):
+    def addPitcher(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
+                   jerseyNumber=0, team="", status="Active", wins=0, losses=0, era=0.0, strikeouts=0):
         """
         Adds a new pitcher to the player storage
-        
-        Args:
-            firstName: Pitcher's first name
-            lastName: Pitcher's last name
-            age: Pitcher's age
-            throwingHand: 'Left' or 'Right'
-            battingHand: 'Left', 'Right', or 'Switch'
-            pitcherRating: Integer 1-99
-        
-        Returns:
-            The created Pitcher object
         """
-        pitcher = Pitcher(firstName, lastName, age, throwingHand, battingHand, pitcherRating)
+        pitcher = Pitcher(firstName, lastName, age, throwingHand, battingHand, pitcherRating,
+                         jerseyNumber, team, status, wins, losses, era, strikeouts)
         playerKey = pitcher.name
         self.players[playerKey] = pitcher
         print("Added pitcher: %s" % playerKey)
         return pitcher
     
-    def addBatter(self, firstName, lastName, age, throwingHand, battingHand, contact):
+    def addBatter(self, firstName, lastName, age, throwingHand, battingHand, contact,
+                  jerseyNumber=0, position="", team="", status="Active", hits=0, strikeouts=0):
         """
         Adds a new batter to the player storage
-        
-        Args:
-            firstName: Batter's first name
-            lastName: Batter's last name
-            age: Batter's age
-            throwingHand: 'Left' or 'Right'
-            battingHand: 'Left', 'Right', or 'Switch'
-            contact: Integer 1-99
-        
-        Returns:
-            The created Batter object
         """
-        batter = Batter(firstName, lastName, age, throwingHand, battingHand, contact)
+        batter = Batter(firstName, lastName, age, throwingHand, battingHand, contact,
+                       jerseyNumber, position, team, status, hits, strikeouts)
         playerKey = batter.name
         self.players[playerKey] = batter
         print("Added batter: %s" % playerKey)
@@ -108,13 +114,6 @@ class PlayerManager(object):
     def getPlayer(self, firstName, lastName):
         """
         Retrieves a player by first and last name
-        
-        Args:
-            firstName: Player's first name
-            lastName: Player's last name
-        
-        Returns:
-            The Player object if found, None otherwise
         """
         playerKey = str(firstName) + str(lastName)
         return self.players.get(playerKey, None)
@@ -122,9 +121,6 @@ class PlayerManager(object):
     def getAllPlayers(self):
         """
         Returns all stored players
-        
-        Returns:
-            Dictionary of all players
         """
         return self.players
     
@@ -143,13 +139,6 @@ class PlayerManager(object):
     def removePlayer(self, firstName, lastName):
         """
         Removes a player from storage
-        
-        Args:
-            firstName: Player's first name
-            lastName: Player's last name
-        
-        Returns:
-            True if player was removed, False if not found
         """
         playerKey = str(firstName) + str(lastName)
         if playerKey in self.players:
@@ -164,15 +153,35 @@ class PlayerManager(object):
 # Run tests
 pm = PlayerManager()
 
-# Test adding pitchers
-print("=== Testing Add Pitcher ===")
-kershaw = pm.addPitcher('Clayton', 'Kershaw', 30, 'Left', 'Right', 95)
+# Test adding pitchers with new fields
+print("=== Testing Add Pitcher with Enhanced Details ===")
+kershaw = pm.addPitcher('Clayton', 'Kershaw', 30, 'Left', 'Right', 95, 
+                        jerseyNumber=22, team='Los Angeles Dodgers', status='Active',
+                        wins=169, losses=74, era=2.48, strikeouts=2396)
 print("Pitcher rating:", kershaw.getRating())
+print("Jersey number:", kershaw.jerseyNumber)
+print("Team:", kershaw.team)
+print("Status:", kershaw.status)
+print("Career stats - W-L: %d-%d, ERA: %.2f, K: %d" % (kershaw.wins, kershaw.losses, kershaw.era, kershaw.strikeouts))
 
-# Test adding batters
-print("\n=== Testing Add Batter ===")
-trout = pm.addBatter('Mike', 'Trout', 28, 'Right', 'Right', 92)
+# Test adding batters with new fields
+print("\n=== Testing Add Batter with Enhanced Details ===")
+trout = pm.addBatter('Mike', 'Trout', 28, 'Right', 'Right', 92,
+                     jerseyNumber=27, position='Outfield', team='Los Angeles Angels', status='Active',
+                     hits=1949, strikeouts=1337)
 print("Batter rating:", trout.getRating())
+print("Jersey number:", trout.jerseyNumber)
+print("Position:", trout.position)
+print("Team:", trout.team)
+print("Status:", trout.status)
+print("Career stats - Hits: %d, K: %d" % (trout.hits, trout.strikeouts))
+
+# Test adding injured player
+print("\n=== Testing Add Injured Player ===")
+injured_pitcher = pm.addPitcher('Max', 'Scherzer', 35, 'Right', 'Right', 94,
+                               jerseyNumber=31, team='New York Mets', status='Injured',
+                               wins=305, losses=143, era=3.16, strikeouts=3358)
+print("Status:", injured_pitcher.status)
 
 # Test listing players
 print("\n=== Testing List Players ===")
@@ -183,6 +192,8 @@ print("\n=== Testing Get Player ===")
 retrieved_pitcher = pm.getPlayer('Clayton', 'Kershaw')
 if retrieved_pitcher:
     print("Retrieved pitcher:", retrieved_pitcher.name)
+    print("Jersey:", retrieved_pitcher.jerseyNumber)
+    print("Team:", retrieved_pitcher.team)
 else:
     print("Pitcher not found")
 
@@ -199,5 +210,13 @@ pm.listPlayers()
 # Test removing non-existent player
 print("\n=== Testing Remove Non-existent Player ===")
 pm.removePlayer('Non', 'Existent')
+
+# Test default values
+print("\n=== Testing Default Values ===")
+default_pitcher = pm.addPitcher('John', 'Doe', 25, 'Right', 'Right', 75)
+print("Default jersey number:", default_pitcher.jerseyNumber)
+print("Default team:", default_pitcher.team)
+print("Default status:", default_pitcher.status)
+print("Default wins:", default_pitcher.wins)
 
 print("\n=== All Tests Complete ===")

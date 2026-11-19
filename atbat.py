@@ -13,43 +13,68 @@ class Player(object):
     """
     Creates a MLB player
     """
-    def __init__(self,firstName,lastName,throwingHand,battingHand):
+    def __init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber=0, position="", team="", status="Active"):
         """
         battingHand='Left','Right','Switch'
         throwingHand='Left','Right'
+        position: Player's position (e.g., 'Pitcher', 'Catcher', 'Outfield')
+        team: Team name
+        status: 'Active' or 'Injured'
         """
-        self.name= str(firstName) + str(lastName)
-        self.throwingHand=throwingHand
-        self.battingHand=battingHand
+        self.name = str(firstName) + str(lastName)
+        self.firstName = firstName
+        self.lastName = lastName
+        self.throwingHand = throwingHand
+        self.battingHand = battingHand
+        self.jerseyNumber = jerseyNumber
+        self.position = position
+        self.team = team
+        self.status = status
     
 class Pitcher(Player):
     """
     A MLB pitcher. Subclass of Player
     """
-    def __init__(self,firstName,lastName,age,throwingHand,battingHand,pitcherRating):
+    def __init__(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
+                 jerseyNumber=0, team="", status="Active", wins=0, losses=0, era=0.0, strikeouts=0):
         """
         Creates a Pitcher Instance.
         Rating=an Integer 1-99
+        wins: Career wins
+        losses: Career losses
+        era: Earned Run Average
+        strikeouts: Career strikeouts
         """
-        Player.__init__(self,firstName,lastName,throwingHand,battingHand)
+        Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, "Pitcher", team, status)
+        self.age = age
         self.pitchDict = PITCH_DICT.copy()
-        self.energy=100
-        self.rating=pitcherRating
+        self.energy = 100
+        self.rating = pitcherRating
+        self.wins = wins
+        self.losses = losses
+        self.era = era
+        self.strikeouts = strikeouts
 
     def getRating(self):
         return self.rating
 
 class Batter(Player):
     """
-    A MLB pitcher. Subclass of Player
+    A MLB batter. Subclass of Player
     """
-    def __init__(self,firstName,lastName,age,throwingHand,battingHand,contact):
+    def __init__(self, firstName, lastName, age, throwingHand, battingHand, contact,
+                 jerseyNumber=0, position="", team="", status="Active", hits=0, strikeouts=0):
         """
-        Creates a Pitcher Instance.
+        Creates a Batter Instance.
         Contact= An integer 1-99
+        hits: Career hits
+        strikeouts: Career strikeouts
         """
-        Player.__init__(self,firstName,lastName,throwingHand,battingHand)
-        self.contact=contact
+        Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, position, team, status)
+        self.age = age
+        self.contact = contact
+        self.hits = hits
+        self.strikeouts = strikeouts
 
     def getRating(self):
         """
@@ -69,7 +94,8 @@ class PlayerManager(object):
         """
         self.players = {}
     
-    def addPitcher(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating):
+    def addPitcher(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
+                   jerseyNumber=0, team="", status="Active", wins=0, losses=0, era=0.0, strikeouts=0):
         """
         Adds a new pitcher to the player storage
         
@@ -80,17 +106,26 @@ class PlayerManager(object):
             throwingHand: 'Left' or 'Right'
             battingHand: 'Left', 'Right', or 'Switch'
             pitcherRating: Integer 1-99
+            jerseyNumber: Jersey number
+            team: Team name
+            status: 'Active' or 'Injured'
+            wins: Career wins
+            losses: Career losses
+            era: Earned Run Average
+            strikeouts: Career strikeouts
         
         Returns:
             The created Pitcher object
         """
-        pitcher = Pitcher(firstName, lastName, age, throwingHand, battingHand, pitcherRating)
+        pitcher = Pitcher(firstName, lastName, age, throwingHand, battingHand, pitcherRating,
+                         jerseyNumber, team, status, wins, losses, era, strikeouts)
         playerKey = pitcher.name
         self.players[playerKey] = pitcher
         print("Added pitcher: %s" % playerKey)
         return pitcher
     
-    def addBatter(self, firstName, lastName, age, throwingHand, battingHand, contact):
+    def addBatter(self, firstName, lastName, age, throwingHand, battingHand, contact,
+                  jerseyNumber=0, position="", team="", status="Active", hits=0, strikeouts=0):
         """
         Adds a new batter to the player storage
         
@@ -101,11 +136,18 @@ class PlayerManager(object):
             throwingHand: 'Left' or 'Right'
             battingHand: 'Left', 'Right', or 'Switch'
             contact: Integer 1-99
+            jerseyNumber: Jersey number
+            position: Player position
+            team: Team name
+            status: 'Active' or 'Injured'
+            hits: Career hits
+            strikeouts: Career strikeouts
         
         Returns:
             The created Batter object
         """
-        batter = Batter(firstName, lastName, age, throwingHand, battingHand, contact)
+        batter = Batter(firstName, lastName, age, throwingHand, battingHand, contact,
+                       jerseyNumber, position, team, status, hits, strikeouts)
         playerKey = batter.name
         self.players[playerKey] = batter
         print("Added batter: %s" % playerKey)
