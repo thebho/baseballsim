@@ -33,22 +33,14 @@ class Pitcher(Player):
     A MLB pitcher. Subclass of Player
     """
     def __init__(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
-                 jerseyNumber=0, team="", status="Active", wins=0, losses=0, era=0.0, strikeouts=0):
+                 jerseyNumber=0, team="", status="Active"):
         """
         Creates a Pitcher Instance.
         Rating=an Integer 1-99
-        wins: Career wins
-        losses: Career losses
-        era: Earned Run Average
-        strikeouts: Career strikeouts
         """
         Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, "Pitcher", team, status)
         self.age = age
         self.rating = pitcherRating
-        self.wins = wins
-        self.losses = losses
-        self.era = era
-        self.strikeouts = strikeouts
 
     def getRating(self):
         return self.rating
@@ -58,18 +50,14 @@ class Batter(Player):
     A MLB batter. Subclass of Player
     """
     def __init__(self, firstName, lastName, age, throwingHand, battingHand, contact,
-                 jerseyNumber=0, position="", team="", status="Active", hits=0, strikeouts=0):
+                 jerseyNumber=0, position="", team="", status="Active"):
         """
         Creates a Batter Instance.
         Contact= An integer 1-99
-        hits: Career hits
-        strikeouts: Career strikeouts
         """
         Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, position, team, status)
         self.age = age
         self.contact = contact
-        self.hits = hits
-        self.strikeouts = strikeouts
 
     def getRating(self):
         """
@@ -88,24 +76,24 @@ class PlayerManager(object):
         self.players = {}
     
     def addPitcher(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
-                   jerseyNumber=0, team="", status="Active", wins=0, losses=0, era=0.0, strikeouts=0):
+                   jerseyNumber=0, team="", status="Active"):
         """
         Adds a new pitcher to the player storage
         """
         pitcher = Pitcher(firstName, lastName, age, throwingHand, battingHand, pitcherRating,
-                         jerseyNumber, team, status, wins, losses, era, strikeouts)
+                         jerseyNumber, team, status)
         playerKey = pitcher.name
         self.players[playerKey] = pitcher
         print("Added pitcher: %s" % playerKey)
         return pitcher
     
     def addBatter(self, firstName, lastName, age, throwingHand, battingHand, contact,
-                  jerseyNumber=0, position="", team="", status="Active", hits=0, strikeouts=0):
+                  jerseyNumber=0, position="", team="", status="Active"):
         """
         Adds a new batter to the player storage
         """
         batter = Batter(firstName, lastName, age, throwingHand, battingHand, contact,
-                       jerseyNumber, position, team, status, hits, strikeouts)
+                       jerseyNumber, position, team, status)
         playerKey = batter.name
         self.players[playerKey] = batter
         print("Added batter: %s" % playerKey)
@@ -156,31 +144,26 @@ pm = PlayerManager()
 # Test adding pitchers with new fields
 print("=== Testing Add Pitcher with Enhanced Details ===")
 kershaw = pm.addPitcher('Clayton', 'Kershaw', 30, 'Left', 'Right', 95, 
-                        jerseyNumber=22, team='Los Angeles Dodgers', status='Active',
-                        wins=169, losses=74, era=2.48, strikeouts=2396)
+                        jerseyNumber=22, team='Los Angeles Dodgers', status='Active')
 print("Pitcher rating:", kershaw.getRating())
 print("Jersey number:", kershaw.jerseyNumber)
 print("Team:", kershaw.team)
 print("Status:", kershaw.status)
-print("Career stats - W-L: %d-%d, ERA: %.2f, K: %d" % (kershaw.wins, kershaw.losses, kershaw.era, kershaw.strikeouts))
 
 # Test adding batters with new fields
 print("\n=== Testing Add Batter with Enhanced Details ===")
 trout = pm.addBatter('Mike', 'Trout', 28, 'Right', 'Right', 92,
-                     jerseyNumber=27, position='Outfield', team='Los Angeles Angels', status='Active',
-                     hits=1949, strikeouts=1337)
+                     jerseyNumber=27, position='Outfield', team='Los Angeles Angels', status='Active')
 print("Batter rating:", trout.getRating())
 print("Jersey number:", trout.jerseyNumber)
 print("Position:", trout.position)
 print("Team:", trout.team)
 print("Status:", trout.status)
-print("Career stats - Hits: %d, K: %d" % (trout.hits, trout.strikeouts))
 
 # Test adding injured player
 print("\n=== Testing Add Injured Player ===")
 injured_pitcher = pm.addPitcher('Max', 'Scherzer', 35, 'Right', 'Right', 94,
-                               jerseyNumber=31, team='New York Mets', status='Injured',
-                               wins=305, losses=143, era=3.16, strikeouts=3358)
+                               jerseyNumber=31, team='New York Mets', status='Injured')
 print("Status:", injured_pitcher.status)
 
 # Test listing players
@@ -217,6 +200,5 @@ default_pitcher = pm.addPitcher('John', 'Doe', 25, 'Right', 'Right', 75)
 print("Default jersey number:", default_pitcher.jerseyNumber)
 print("Default team:", default_pitcher.team)
 print("Default status:", default_pitcher.status)
-print("Default wins:", default_pitcher.wins)
 
 print("\n=== All Tests Complete ===")
