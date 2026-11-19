@@ -59,6 +59,113 @@ class Batter(Player):
 
    ### Temporary classes ###
 
+class PlayerManager(object):
+    """
+    Manages storage and retrieval of players in memory
+    """
+    def __init__(self):
+        """
+        Initializes the PlayerManager with empty player storage
+        """
+        self.players = {}
+    
+    def addPitcher(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating):
+        """
+        Adds a new pitcher to the player storage
+        
+        Args:
+            firstName: Pitcher's first name
+            lastName: Pitcher's last name
+            age: Pitcher's age
+            throwingHand: 'Left' or 'Right'
+            battingHand: 'Left', 'Right', or 'Switch'
+            pitcherRating: Integer 1-99
+        
+        Returns:
+            The created Pitcher object
+        """
+        pitcher = Pitcher(firstName, lastName, age, throwingHand, battingHand, pitcherRating)
+        playerKey = pitcher.name
+        self.players[playerKey] = pitcher
+        print("Added pitcher: %s" % playerKey)
+        return pitcher
+    
+    def addBatter(self, firstName, lastName, age, throwingHand, battingHand, contact):
+        """
+        Adds a new batter to the player storage
+        
+        Args:
+            firstName: Batter's first name
+            lastName: Batter's last name
+            age: Batter's age
+            throwingHand: 'Left' or 'Right'
+            battingHand: 'Left', 'Right', or 'Switch'
+            contact: Integer 1-99
+        
+        Returns:
+            The created Batter object
+        """
+        batter = Batter(firstName, lastName, age, throwingHand, battingHand, contact)
+        playerKey = batter.name
+        self.players[playerKey] = batter
+        print("Added batter: %s" % playerKey)
+        return batter
+    
+    def getPlayer(self, firstName, lastName):
+        """
+        Retrieves a player by first and last name
+        
+        Args:
+            firstName: Player's first name
+            lastName: Player's last name
+        
+        Returns:
+            The Player object if found, None otherwise
+        """
+        playerKey = str(firstName) + str(lastName)
+        return self.players.get(playerKey, None)
+    
+    def getAllPlayers(self):
+        """
+        Returns all stored players
+        
+        Returns:
+            Dictionary of all players
+        """
+        return self.players
+    
+    def listPlayers(self):
+        """
+        Prints all stored players
+        """
+        if not self.players:
+            print("No players stored")
+            return
+        print("Stored Players:")
+        for playerName, player in self.players.items():
+            playerType = "Pitcher" if isinstance(player, Pitcher) else "Batter"
+            print("  - %s (%s)" % (playerName, playerType))
+    
+    def removePlayer(self, firstName, lastName):
+        """
+        Removes a player from storage
+        
+        Args:
+            firstName: Player's first name
+            lastName: Player's last name
+        
+        Returns:
+            True if player was removed, False if not found
+        """
+        playerKey = str(firstName) + str(lastName)
+        if playerKey in self.players:
+            del self.players[playerKey]
+            print("Removed player: %s" % playerKey)
+            return True
+        else:
+            print("Player not found: %s" % playerKey)
+            return False
+
 class Pitch(object):
     """
     Chooses a pitch from a weighted list, chooses a location relative to
@@ -73,9 +180,9 @@ class Pitch(object):
         """
         self.pitcher=pitcher
         self.location=random.uniform(STRIKE_WIDTH[0],STRIKE_WIDTH[1]),random.uniform(STRIKE_HEIGHT[0],STRIKE_HEIGHT[1])
-        self.pitch=random.choice(self.pitcher.pitchDict.keys())
+        self.pitch=random.choice(list(self.pitcher.pitchDict.keys()))
         self.pitchQuality=100-(10*random.random())
-        print self.pitch
+        print(self.pitch)
     
     def getPitch(self):
         """
@@ -129,14 +236,14 @@ class Swing(object):
         randomTake=100-100*random.random()
         x,y = Pitch.getLocation(self.currentPitch)
         if -0.4<x<0.4 and -1.0<y<0.5:
-            print 'Swung at strike'
+            print('Swung at strike')
             return True
         elif -0.9<x<0.9 and -2.0<y<2.0 and takePer<randomTake:
             if random.random()>0.5:
-                print 'Swung at borderline pitch'
+                print('Swung at borderline pitch')
                 return True
             else:
-                print 'Didnt swing at borderline pitch'
+                print('Didnt swing at borderline pitch')
                 return False
         else: return False
 
@@ -148,7 +255,7 @@ class Swing(object):
         """
         x,y=Pitch.getLocation(self.currentPitch)
         if -0.6<x<0.6 and -2.0<y<1.5:
-            print 'Made contact down the middle'
+            print('Made contact down the middle')
             return True
         batterRating=self.batter.getRating()
         pitcherAdvantage=self.pitchQuality-batterRating
@@ -186,7 +293,7 @@ def atBat(pitcher,batter):
     pitchList=[]
 
     while balls<4 and strikes<3 and inPlay==False:
-        print balls,strikes
+        print(balls,strikes)
         pitchCount+=1
         P=Pitch(pitcher)
         pitchList.append(P.getLocation())
@@ -198,13 +305,13 @@ def atBat(pitcher,batter):
             if S.swingContact()==True:
                 inPlay=True
 ##                plotPitches(pitcher,P,None,pitchCount)
-                print 'Ball in play'
+                print('Ball in play')
             else:
                 strikes+=1
-                print 'Swinging Strike'
-    if balls==4:print 'Base on Balls'
-    elif strikes==3: print 'Strike Out'
-    print pitchList
+                print('Swinging Strike')
+    if balls==4:print('Base on Balls')
+    elif strikes==3: print('Strike Out')
+    print(pitchList)
     pitchW,pitchH,labels,pi=[],[],[],0
     for i in pitchList:
         pi+=1
@@ -234,16 +341,12 @@ atBat(BobGibson,StanMusial)
 Result=False
 while Result==False:
     PitchCount+=1
-    print 'Pitch',PitchCount
+    print('Pitch',PitchCount)
     P=Pitch(BobGibson)
     S=Swing(BobGibson,P,StanMusial)
     if S.swingOrTake()==True:
         if S.swingContact()==True:
-            print 'Batter Swings Contact Made'
+            print('Batter Swings Contact Made')
             Result=True
         else:
-            print 'Batter Swings and Misses'
-
-
-
-
+            print('Batter Swings and Misses')
