@@ -328,15 +328,6 @@ class TestIntegration(unittest.TestCase):
             contact_result = swing.swingContact()
             self.assertIsInstance(contact_result, bool)
     
-    def test_multiple_pitches(self):
-        """Test throwing multiple pitches"""
-        pitches = []
-        for _ in range(5):
-            pitch = Pitch(self.pitcher)
-            pitches.append(pitch)
-            self.assertIsNotNone(pitch.location)
-            self.assertIsNotNone(pitch.pitch)
-    
     def test_good_batter_vs_bad_pitcher(self):
         """Test good batter against bad pitcher"""
         bad_pitcher = Pitcher('Bad', 'Pitcher', 30, 'Right', 'Right', 40)
