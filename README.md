@@ -126,3 +126,5 @@ This project is open source and available for educational purposes.
 > "The game is played one pitch at a time." — Unknown
 
 > "Baseball is a game of failure. Even the best hitters fail 70% of the time." — Unknown
+
+> "Baseball is ninety percent mental and the other half is physical." — Yogi Berra
