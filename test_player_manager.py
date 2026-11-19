@@ -1,45 +1,80 @@
 #!/usr/bin/env python
-"""Test script for PlayerManager functionality with enhanced player details"""
+"""Test script for PlayerManager functionality with birth date and multiple positions"""
 
 # Test the PlayerManager class without importing the full module
 import sys
 sys.path.insert(0, '/workspace')
+
+from datetime import datetime
 
 # Define the classes needed for testing
 class Player(object):
     """
     Creates a MLB player
     """
-    def __init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber=0, position="", team="", status="Active"):
+    def __init__(self, firstName, lastName, throwingHand, battingHand, birthDate, jerseyNumber=0, positions=None, team="", status="Active"):
         """
-        battingHand='Left','Right','Switch'
-        throwingHand='Left','Right'
-        position: Player's position (e.g., 'Pitcher', 'Catcher', 'Outfield')
-        team: Team name
-        status: 'Active' or 'Injured'
+        birthDate: Player's birth date (YYYY-MM-DD format or datetime object)
+        positions: List of positions (e.g., ['Pitcher'], ['Catcher', 'DH'])
         """
         self.name = str(firstName) + str(lastName)
         self.firstName = firstName
         self.lastName = lastName
         self.throwingHand = throwingHand
         self.battingHand = battingHand
+        self.birthDate = self._parse_date(birthDate)
         self.jerseyNumber = jerseyNumber
-        self.position = position
+        self.positions = positions if positions else []
         self.team = team
         self.status = status
+    
+    def _parse_date(self, date_input):
+        """Parse date from string or datetime object"""
+        if isinstance(date_input, datetime):
+            return date_input
+        elif isinstance(date_input, str):
+            try:
+                return datetime.strptime(date_input, '%Y-%m-%d')
+            except ValueError:
+                raise ValueError("Date must be in YYYY-MM-DD format")
+        else:
+            raise ValueError("Date must be a string (YYYY-MM-DD) or datetime object")
+    
+    def getAge(self):
+        """Calculate age from birth date"""
+        today = datetime.now()
+        age = today.year - self.birthDate.year
+        if (today.month, today.day) < (self.birthDate.month, self.birthDate.day):
+            age -= 1
+        return age
+    
+    def addPosition(self, position):
+        """Add a position to the player's positions list"""
+        if position not in self.positions:
+            self.positions.append(position)
+    
+    def removePosition(self, position):
+        """Remove a position from the player's positions list"""
+        if position in self.positions:
+            self.positions.remove(position)
     
 class Pitcher(Player):
     """
     A MLB pitcher. Subclass of Player
     """
-    def __init__(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
-                 jerseyNumber=0, team="", status="Active"):
+    def __init__(self, firstName, lastName, birthDate, throwingHand, battingHand, pitcherRating,
+                 jerseyNumber=0, positions=None, team="", status="Active"):
         """
         Creates a Pitcher Instance.
         Rating=an Integer 1-99
+        positions: List of positions (defaults to ['Pitcher'])
         """
-        Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, "Pitcher", team, status)
-        self.age = age
+        if positions is None:
+            positions = ['Pitcher']
+        elif 'Pitcher' not in positions:
+            positions = ['Pitcher'] + positions
+        
+        Player.__init__(self, firstName, lastName, throwingHand, battingHand, birthDate, jerseyNumber, positions, team, status)
         self.rating = pitcherRating
 
     def getRating(self):
@@ -49,14 +84,17 @@ class Batter(Player):
     """
     A MLB batter. Subclass of Player
     """
-    def __init__(self, firstName, lastName, age, throwingHand, battingHand, contact,
-                 jerseyNumber=0, position="", team="", status="Active"):
+    def __init__(self, firstName, lastName, birthDate, throwingHand, battingHand, contact,
+                 jerseyNumber=0, positions=None, team="", status="Active"):
         """
         Creates a Batter Instance.
         Contact= An integer 1-99
+        positions: List of positions (e.g., ['Catcher'], ['Outfield', 'DH'])
         """
-        Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, position, team, status)
-        self.age = age
+        if positions is None:
+            positions = []
+        
+        Player.__init__(self, firstName, lastName, throwingHand, battingHand, birthDate, jerseyNumber, positions, team, status)
         self.contact = contact
 
     def getRating(self):
@@ -75,25 +113,25 @@ class PlayerManager(object):
         """
         self.players = {}
     
-    def addPitcher(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
-                   jerseyNumber=0, team="", status="Active"):
+    def addPitcher(self, firstName, lastName, birthDate, throwingHand, battingHand, pitcherRating,
+                   jerseyNumber=0, positions=None, team="", status="Active"):
         """
         Adds a new pitcher to the player storage
         """
-        pitcher = Pitcher(firstName, lastName, age, throwingHand, battingHand, pitcherRating,
-                         jerseyNumber, team, status)
+        pitcher = Pitcher(firstName, lastName, birthDate, throwingHand, battingHand, pitcherRating,
+                         jerseyNumber, positions, team, status)
         playerKey = pitcher.name
         self.players[playerKey] = pitcher
         print("Added pitcher: %s" % playerKey)
         return pitcher
     
-    def addBatter(self, firstName, lastName, age, throwingHand, battingHand, contact,
-                  jerseyNumber=0, position="", team="", status="Active"):
+    def addBatter(self, firstName, lastName, birthDate, throwingHand, battingHand, contact,
+                  jerseyNumber=0, positions=None, team="", status="Active"):
         """
         Adds a new batter to the player storage
         """
-        batter = Batter(firstName, lastName, age, throwingHand, battingHand, contact,
-                       jerseyNumber, position, team, status)
+        batter = Batter(firstName, lastName, birthDate, throwingHand, battingHand, contact,
+                       jerseyNumber, positions, team, status)
         playerKey = batter.name
         self.players[playerKey] = batter
         print("Added batter: %s" % playerKey)
@@ -122,7 +160,8 @@ class PlayerManager(object):
         print("Stored Players:")
         for playerName, player in self.players.items():
             playerType = "Pitcher" if isinstance(player, Pitcher) else "Batter"
-            print("  - %s (%s)" % (playerName, playerType))
+            positions_str = ", ".join(player.positions) if player.positions else "None"
+            print("  - %s (%s) - Positions: %s, Age: %d" % (playerName, playerType, positions_str, player.getAge()))
     
     def removePlayer(self, firstName, lastName):
         """
@@ -141,30 +180,46 @@ class PlayerManager(object):
 # Run tests
 pm = PlayerManager()
 
-# Test adding pitchers with new fields
-print("=== Testing Add Pitcher with Enhanced Details ===")
-kershaw = pm.addPitcher('Clayton', 'Kershaw', 30, 'Left', 'Right', 95, 
-                        jerseyNumber=22, team='Los Angeles Dodgers', status='Active')
+# Test adding pitchers with birth date and positions
+print("=== Testing Add Pitcher with Birth Date and Positions ===")
+kershaw = pm.addPitcher('Clayton', 'Kershaw', '1987-03-19', 'Left', 'Right', 95, 
+                        jerseyNumber=22, positions=['DH'], team='Los Angeles Dodgers', status='Active')
 print("Pitcher rating:", kershaw.getRating())
+print("Birth date:", kershaw.birthDate.strftime('%Y-%m-%d'))
+print("Age:", kershaw.getAge())
+print("Positions:", kershaw.positions)
 print("Jersey number:", kershaw.jerseyNumber)
 print("Team:", kershaw.team)
 print("Status:", kershaw.status)
 
-# Test adding batters with new fields
-print("\n=== Testing Add Batter with Enhanced Details ===")
-trout = pm.addBatter('Mike', 'Trout', 28, 'Right', 'Right', 92,
-                     jerseyNumber=27, position='Outfield', team='Los Angeles Angels', status='Active')
+# Test adding batters with birth date and positions
+print("\n=== Testing Add Batter with Birth Date and Positions ===")
+trout = pm.addBatter('Mike', 'Trout', '1991-08-07', 'Right', 'Right', 92,
+                     jerseyNumber=27, positions=['Outfield', 'DH'], team='Los Angeles Angels', status='Active')
 print("Batter rating:", trout.getRating())
+print("Birth date:", trout.birthDate.strftime('%Y-%m-%d'))
+print("Age:", trout.getAge())
+print("Positions:", trout.positions)
 print("Jersey number:", trout.jerseyNumber)
-print("Position:", trout.position)
 print("Team:", trout.team)
 print("Status:", trout.status)
 
 # Test adding injured player
 print("\n=== Testing Add Injured Player ===")
-injured_pitcher = pm.addPitcher('Max', 'Scherzer', 35, 'Right', 'Right', 94,
+injured_pitcher = pm.addPitcher('Max', 'Scherzer', '1984-07-27', 'Right', 'Right', 94,
                                jerseyNumber=31, team='New York Mets', status='Injured')
 print("Status:", injured_pitcher.status)
+print("Age:", injured_pitcher.getAge())
+
+# Test adding position to player
+print("\n=== Testing Add Position to Player ===")
+kershaw.addPosition('Outfield')
+print("Kershaw positions after adding Outfield:", kershaw.positions)
+
+# Test removing position from player
+print("\n=== Testing Remove Position from Player ===")
+kershaw.removePosition('DH')
+print("Kershaw positions after removing DH:", kershaw.positions)
 
 # Test listing players
 print("\n=== Testing List Players ===")
@@ -175,7 +230,9 @@ print("\n=== Testing Get Player ===")
 retrieved_pitcher = pm.getPlayer('Clayton', 'Kershaw')
 if retrieved_pitcher:
     print("Retrieved pitcher:", retrieved_pitcher.name)
-    print("Jersey:", retrieved_pitcher.jerseyNumber)
+    print("Birth date:", retrieved_pitcher.birthDate.strftime('%Y-%m-%d'))
+    print("Age:", retrieved_pitcher.getAge())
+    print("Positions:", retrieved_pitcher.positions)
     print("Team:", retrieved_pitcher.team)
 else:
     print("Pitcher not found")
@@ -196,9 +253,19 @@ pm.removePlayer('Non', 'Existent')
 
 # Test default values
 print("\n=== Testing Default Values ===")
-default_pitcher = pm.addPitcher('John', 'Doe', 25, 'Right', 'Right', 75)
+default_pitcher = pm.addPitcher('John', 'Doe', '1995-06-15', 'Right', 'Right', 75)
 print("Default jersey number:", default_pitcher.jerseyNumber)
 print("Default team:", default_pitcher.team)
 print("Default status:", default_pitcher.status)
+print("Default positions:", default_pitcher.positions)
+print("Age:", default_pitcher.getAge())
+
+# Test pitcher with multiple positions
+print("\n=== Testing Pitcher with Multiple Positions ===")
+multi_pitcher = pm.addPitcher('Shohei', 'Ohtani', '1994-07-05', 'Left', 'Left', 96,
+                             jerseyNumber=17, positions=['DH', 'Outfield'], 
+                             team='Los Angeles Dodgers', status='Active')
+print("Positions:", multi_pitcher.positions)
+print("Pitcher is always first:", multi_pitcher.positions[0] == 'Pitcher')
 
 print("\n=== All Tests Complete ===")

@@ -4,7 +4,7 @@ This document describes the player management features in the baseball simulator
 
 ## Overview
 
-The baseball simulator includes a `PlayerManager` class that allows users to create, store, retrieve, and manage baseball players in memory. Players can be either pitchers or batters, each with comprehensive attributes.
+The baseball simulator includes a `PlayerManager` class that allows users to create, store, retrieve, and manage baseball players in memory. Players can be either pitchers or batters, each with comprehensive attributes including birth date and multiple positions.
 
 ## Features
 
@@ -14,17 +14,18 @@ The `PlayerManager` class provides a centralized way to manage all players in th
 
 #### Methods
 
-##### `addPitcher(firstName, lastName, age, throwingHand, battingHand, pitcherRating, jerseyNumber=0, team="", status="Active")`
+##### `addPitcher(firstName, lastName, birthDate, throwingHand, battingHand, pitcherRating, jerseyNumber=0, positions=None, team="", status="Active")`
 Adds a new pitcher to the player storage.
 
 **Parameters:**
 - `firstName` (str): Pitcher's first name
 - `lastName` (str): Pitcher's last name
-- `age` (int): Pitcher's age
+- `birthDate` (str or datetime): Pitcher's birth date in YYYY-MM-DD format or datetime object
 - `throwingHand` (str): 'Left' or 'Right'
 - `battingHand` (str): 'Left', 'Right', or 'Switch'
 - `pitcherRating` (int): Rating from 1-99
 - `jerseyNumber` (int, optional): Jersey number (default: 0)
+- `positions` (list, optional): Additional positions beyond Pitcher (default: None, which becomes ['Pitcher'])
 - `team` (str, optional): Team name (default: "")
 - `status` (str, optional): 'Active' or 'Injured' (default: "Active")
 
@@ -33,23 +34,23 @@ Adds a new pitcher to the player storage.
 **Example:**
 ```python
 manager = PlayerManager()
-kershaw = manager.addPitcher('Clayton', 'Kershaw', 30, 'Left', 'Right', 95,
-                            jerseyNumber=22, team='Los Angeles Dodgers', 
-                            status='Active')
+kershaw = manager.addPitcher('Clayton', 'Kershaw', '1987-03-19', 'Left', 'Right', 95,
+                            jerseyNumber=22, positions=['DH'], 
+                            team='Los Angeles Dodgers', status='Active')
 ```
 
-##### `addBatter(firstName, lastName, age, throwingHand, battingHand, contact, jerseyNumber=0, position="", team="", status="Active")`
+##### `addBatter(firstName, lastName, birthDate, throwingHand, battingHand, contact, jerseyNumber=0, positions=None, team="", status="Active")`
 Adds a new batter to the player storage.
 
 **Parameters:**
 - `firstName` (str): Batter's first name
 - `lastName` (str): Batter's last name
-- `age` (int): Batter's age
+- `birthDate` (str or datetime): Batter's birth date in YYYY-MM-DD format or datetime object
 - `throwingHand` (str): 'Left' or 'Right'
 - `battingHand` (str): 'Left', 'Right', or 'Switch'
 - `contact` (int): Contact rating from 1-99
 - `jerseyNumber` (int, optional): Jersey number (default: 0)
-- `position` (str, optional): Player position, e.g., 'Catcher', 'Outfield', 'Infield' (default: "")
+- `positions` (list, optional): Player positions, e.g., ['Catcher'], ['Outfield', 'DH'] (default: None, which becomes [])
 - `team` (str, optional): Team name (default: "")
 - `status` (str, optional): 'Active' or 'Injured' (default: "Active")
 
@@ -57,8 +58,8 @@ Adds a new batter to the player storage.
 
 **Example:**
 ```python
-trout = manager.addBatter('Mike', 'Trout', 28, 'Right', 'Right', 92,
-                         jerseyNumber=27, position='Outfield', 
+trout = manager.addBatter('Mike', 'Trout', '1991-08-07', 'Right', 'Right', 92,
+                         jerseyNumber=27, positions=['Outfield', 'DH'], 
                          team='Los Angeles Angels', status='Active')
 ```
 
@@ -76,6 +77,7 @@ Retrieves a player by first and last name.
 player = manager.getPlayer('Clayton', 'Kershaw')
 if player:
     print("Found:", player.name)
+    print("Age:", player.getAge())
 ```
 
 ##### `getAllPlayers()`
@@ -99,12 +101,12 @@ manager.listPlayers()
 
 Output:
 ```
-================================================================================
+====================================================================================================
 STORED PLAYERS
-================================================================================
-Pitcher: ClaytonKershaw #22 (Age: 30, Rating: 95, Throws: Left, Team: Los Angeles Dodgers, Status: Active)
-Batter: MikeTrout #27 (Age: 28, Contact: 92, Bats: Right, Position: Outfield, Team: Los Angeles Angels, Status: Active)
-================================================================================
+====================================================================================================
+Pitcher: ClaytonKershaw #22 (DOB: 1987-03-19, Age: 36, Rating: 95, Throws: Left, Positions: Pitcher, DH, Team: Los Angeles Dodgers, Status: Active)
+Batter: MikeTrout #27 (DOB: 1991-08-07, Age: 32, Contact: 92, Bats: Right, Positions: Outfield, DH, Team: Los Angeles Angels, Status: Active)
+====================================================================================================
 ```
 
 ##### `removePlayer(firstName, lastName)`
@@ -121,21 +123,52 @@ Removes a player from storage.
 success = manager.removePlayer('Mike', 'Trout')
 ```
 
+## Player Attributes and Methods
+
+### Player Base Class
+
+#### Attributes
+- `name`: Full name (firstName + lastName)
+- `firstName`: First name
+- `lastName`: Last name
+- `birthDate`: Birth date (datetime object)
+- `throwingHand`: 'Left' or 'Right'
+- `battingHand`: 'Left', 'Right', or 'Switch'
+- `jerseyNumber`: Jersey number
+- `positions`: List of positions (e.g., ['Pitcher'], ['Catcher', 'DH'])
+- `team`: Team name
+- `status`: 'Active' or 'Injured'
+
+#### Methods
+- `getAge()`: Returns calculated age based on birth date
+- `addPosition(position)`: Adds a position to the player's positions list
+- `removePosition(position)`: Removes a position from the player's positions list
+
+### Pitcher (extends Player)
+- `rating`: Pitcher skill rating (1-99)
+- `energy`: Current energy level (0-100)
+- `getRating()`: Returns pitcher rating
+
+### Batter (extends Player)
+- `contact`: Contact rating (1-99)
+- `getRating()`: Returns contact rating
+
 ## Usage Examples
 
 ### Basic Usage
 
 ```python
-from atbat import PlayerManager, Pitcher, Batter
+from player_manager_ui import PlayerManager, Pitcher, Batter
 
 # Create a player manager
 manager = PlayerManager()
 
 # Add some players with full details
-kershaw = manager.addPitcher('Clayton', 'Kershaw', 30, 'Left', 'Right', 95,
-                            jerseyNumber=22, team='Los Angeles Dodgers')
-trout = manager.addBatter('Mike', 'Trout', 28, 'Right', 'Right', 92,
-                         jerseyNumber=27, position='Outfield',
+kershaw = manager.addPitcher('Clayton', 'Kershaw', '1987-03-19', 'Left', 'Right', 95,
+                            jerseyNumber=22, positions=['DH'],
+                            team='Los Angeles Dodgers')
+trout = manager.addBatter('Mike', 'Trout', '1991-08-07', 'Right', 'Right', 92,
+                         jerseyNumber=27, positions=['Outfield', 'DH'],
                          team='Los Angeles Angels')
 
 # List all players
@@ -144,9 +177,14 @@ manager.listPlayers()
 # Search for a player
 player = manager.getPlayer('Clayton', 'Kershaw')
 if player:
-    print("Found:", player.name, "Rating:", player.getRating())
+    print("Found:", player.name)
+    print("Age:", player.getAge())
+    print("Positions:", player.positions)
     print("Team:", player.team)
     print("Status:", player.status)
+
+# Add additional position to a player
+player.addPosition('Outfield')
 
 # Remove a player
 manager.removePlayer('Mike', 'Trout')
@@ -161,41 +199,49 @@ python player_manager_ui.py
 ```
 
 This will launch an interactive menu where you can:
-1. Add a new pitcher (with all details)
-2. Add a new batter (with all details)
+1. Add a new pitcher (with all details including birth date and positions)
+2. Add a new batter (with all details including birth date and positions)
 3. View all players
 4. Search for a player
 5. Remove a player
 6. Exit
 
-## Player Attributes
+## Birth Date and Age Calculation
 
-### Pitcher
-- `name`: Full name (firstName + lastName)
-- `firstName`: First name
-- `lastName`: Last name
-- `age`: Age in years
-- `throwingHand`: 'Left' or 'Right'
-- `battingHand`: 'Left', 'Right', or 'Switch'
-- `jerseyNumber`: Jersey number
-- `position`: Always 'Pitcher'
-- `team`: Team name
-- `status`: 'Active' or 'Injured'
-- `rating`: Pitcher skill rating (1-99)
-- `energy`: Current energy level (0-100)
+Players are now stored with a birth date instead of age. The age is calculated dynamically based on the current date:
 
-### Batter
-- `name`: Full name (firstName + lastName)
-- `firstName`: First name
-- `lastName`: Last name
-- `age`: Age in years
-- `throwingHand`: 'Left' or 'Right'
-- `battingHand`: 'Left', 'Right', or 'Switch'
-- `jerseyNumber`: Jersey number
-- `position`: Player position (e.g., 'Catcher', 'Outfield', 'Infield')
-- `team`: Team name
-- `status`: 'Active' or 'Injured'
-- `contact`: Contact rating (1-99)
+```python
+player = manager.getPlayer('Clayton', 'Kershaw')
+print("Birth date:", player.birthDate.strftime('%Y-%m-%d'))
+print("Current age:", player.getAge())
+```
+
+Birth dates must be provided in YYYY-MM-DD format (e.g., '1987-03-19').
+
+## Multiple Positions
+
+Players can now have multiple positions:
+
+- **Pitchers** always have 'Pitcher' as their first position, with optional additional positions (e.g., DH, Outfield)
+- **Batters** can have any positions (e.g., Catcher, Outfield, Infield, DH)
+
+```python
+# Pitcher with multiple positions
+ohtani = manager.addPitcher('Shohei', 'Ohtani', '1994-07-05', 'Left', 'Left', 96,
+                           jerseyNumber=17, positions=['DH', 'Outfield'],
+                           team='Los Angeles Dodgers')
+print(ohtani.positions)  # ['Pitcher', 'DH', 'Outfield']
+
+# Batter with multiple positions
+trout = manager.addBatter('Mike', 'Trout', '1991-08-07', 'Right', 'Right', 92,
+                         jerseyNumber=27, positions=['Outfield', 'DH'],
+                         team='Los Angeles Angels')
+print(trout.positions)  # ['Outfield', 'DH']
+
+# Add position dynamically
+trout.addPosition('Infield')
+print(trout.positions)  # ['Outfield', 'DH', 'Infield']
+```
 
 ## Files
 

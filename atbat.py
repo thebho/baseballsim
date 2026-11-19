@@ -1,5 +1,6 @@
 import math,random
 import pylab
+from datetime import datetime
 PITCH_SKILL,PITCH_FREQ=0,1
 PITCH_DICT ={'Fastball':[0.97,'r'],'ChangeUp':[0.95,'b']}
 STRIKE_WIDTH=(-1.0,1.0)
@@ -13,11 +14,12 @@ class Player(object):
     """
     Creates a MLB player
     """
-    def __init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber=0, position="", team="", status="Active"):
+    def __init__(self, firstName, lastName, throwingHand, battingHand, birthDate, jerseyNumber=0, positions=None, team="", status="Active"):
         """
         battingHand='Left','Right','Switch'
         throwingHand='Left','Right'
-        position: Player's position (e.g., 'Pitcher', 'Catcher', 'Outfield')
+        birthDate: Player's birth date (YYYY-MM-DD format or datetime object)
+        positions: List of positions (e.g., ['Pitcher'], ['Catcher', 'DH'], ['Outfield', 'Pitcher'])
         team: Team name
         status: 'Active' or 'Injured'
         """
@@ -26,23 +28,59 @@ class Player(object):
         self.lastName = lastName
         self.throwingHand = throwingHand
         self.battingHand = battingHand
+        self.birthDate = self._parse_date(birthDate)
         self.jerseyNumber = jerseyNumber
-        self.position = position
+        self.positions = positions if positions else []
         self.team = team
         self.status = status
+    
+    def _parse_date(self, date_input):
+        """Parse date from string or datetime object"""
+        if isinstance(date_input, datetime):
+            return date_input
+        elif isinstance(date_input, str):
+            try:
+                return datetime.strptime(date_input, '%Y-%m-%d')
+            except ValueError:
+                raise ValueError("Date must be in YYYY-MM-DD format")
+        else:
+            raise ValueError("Date must be a string (YYYY-MM-DD) or datetime object")
+    
+    def getAge(self):
+        """Calculate age from birth date"""
+        today = datetime.now()
+        age = today.year - self.birthDate.year
+        if (today.month, today.day) < (self.birthDate.month, self.birthDate.day):
+            age -= 1
+        return age
+    
+    def addPosition(self, position):
+        """Add a position to the player's positions list"""
+        if position not in self.positions:
+            self.positions.append(position)
+    
+    def removePosition(self, position):
+        """Remove a position from the player's positions list"""
+        if position in self.positions:
+            self.positions.remove(position)
     
 class Pitcher(Player):
     """
     A MLB pitcher. Subclass of Player
     """
-    def __init__(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
-                 jerseyNumber=0, team="", status="Active"):
+    def __init__(self, firstName, lastName, birthDate, throwingHand, battingHand, pitcherRating,
+                 jerseyNumber=0, positions=None, team="", status="Active"):
         """
         Creates a Pitcher Instance.
         Rating=an Integer 1-99
+        positions: List of positions (defaults to ['Pitcher'])
         """
-        Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, "Pitcher", team, status)
-        self.age = age
+        if positions is None:
+            positions = ['Pitcher']
+        elif 'Pitcher' not in positions:
+            positions = ['Pitcher'] + positions
+        
+        Player.__init__(self, firstName, lastName, throwingHand, battingHand, birthDate, jerseyNumber, positions, team, status)
         self.pitchDict = PITCH_DICT.copy()
         self.energy = 100
         self.rating = pitcherRating
@@ -54,14 +92,17 @@ class Batter(Player):
     """
     A MLB batter. Subclass of Player
     """
-    def __init__(self, firstName, lastName, age, throwingHand, battingHand, contact,
-                 jerseyNumber=0, position="", team="", status="Active"):
+    def __init__(self, firstName, lastName, birthDate, throwingHand, battingHand, contact,
+                 jerseyNumber=0, positions=None, team="", status="Active"):
         """
         Creates a Batter Instance.
         Contact= An integer 1-99
+        positions: List of positions (e.g., ['Catcher'], ['Outfield', 'DH'])
         """
-        Player.__init__(self, firstName, lastName, throwingHand, battingHand, jerseyNumber, position, team, status)
-        self.age = age
+        if positions is None:
+            positions = []
+        
+        Player.__init__(self, firstName, lastName, throwingHand, battingHand, birthDate, jerseyNumber, positions, team, status)
         self.contact = contact
 
     def getRating(self):
@@ -82,54 +123,55 @@ class PlayerManager(object):
         """
         self.players = {}
     
-    def addPitcher(self, firstName, lastName, age, throwingHand, battingHand, pitcherRating,
-                   jerseyNumber=0, team="", status="Active"):
+    def addPitcher(self, firstName, lastName, birthDate, throwingHand, battingHand, pitcherRating,
+                   jerseyNumber=0, positions=None, team="", status="Active"):
         """
         Adds a new pitcher to the player storage
         
         Args:
             firstName: Pitcher's first name
             lastName: Pitcher's last name
-            age: Pitcher's age
+            birthDate: Pitcher's birth date (YYYY-MM-DD format or datetime object)
             throwingHand: 'Left' or 'Right'
             battingHand: 'Left', 'Right', or 'Switch'
             pitcherRating: Integer 1-99
             jerseyNumber: Jersey number
+            positions: List of positions (defaults to ['Pitcher'])
             team: Team name
             status: 'Active' or 'Injured'
         
         Returns:
             The created Pitcher object
         """
-        pitcher = Pitcher(firstName, lastName, age, throwingHand, battingHand, pitcherRating,
-                         jerseyNumber, team, status)
+        pitcher = Pitcher(firstName, lastName, birthDate, throwingHand, battingHand, pitcherRating,
+                         jerseyNumber, positions, team, status)
         playerKey = pitcher.name
         self.players[playerKey] = pitcher
         print("Added pitcher: %s" % playerKey)
         return pitcher
     
-    def addBatter(self, firstName, lastName, age, throwingHand, battingHand, contact,
-                  jerseyNumber=0, position="", team="", status="Active"):
+    def addBatter(self, firstName, lastName, birthDate, throwingHand, battingHand, contact,
+                  jerseyNumber=0, positions=None, team="", status="Active"):
         """
         Adds a new batter to the player storage
         
         Args:
             firstName: Batter's first name
             lastName: Batter's last name
-            age: Batter's age
+            birthDate: Batter's birth date (YYYY-MM-DD format or datetime object)
             throwingHand: 'Left' or 'Right'
             battingHand: 'Left', 'Right', or 'Switch'
             contact: Integer 1-99
             jerseyNumber: Jersey number
-            position: Player position
+            positions: List of positions (e.g., ['Catcher'], ['Outfield', 'DH'])
             team: Team name
             status: 'Active' or 'Injured'
         
         Returns:
             The created Batter object
         """
-        batter = Batter(firstName, lastName, age, throwingHand, battingHand, contact,
-                       jerseyNumber, position, team, status)
+        batter = Batter(firstName, lastName, birthDate, throwingHand, battingHand, contact,
+                       jerseyNumber, positions, team, status)
         playerKey = batter.name
         self.players[playerKey] = batter
         print("Added batter: %s" % playerKey)
@@ -168,7 +210,8 @@ class PlayerManager(object):
         print("Stored Players:")
         for playerName, player in self.players.items():
             playerType = "Pitcher" if isinstance(player, Pitcher) else "Batter"
-            print("  - %s (%s)" % (playerName, playerType))
+            positions_str = ", ".join(player.positions) if player.positions else "None"
+            print("  - %s (%s) - Positions: %s" % (playerName, playerType, positions_str))
     
     def removePlayer(self, firstName, lastName):
         """
@@ -356,9 +399,9 @@ def atBat(pitcher,batter):
 
 
         
-BobGibson=Pitcher('Bob','Gibson',20,'Right','Right',98)
-StanMusial=Batter('Stan','Musical',20,'Right','Right',94)
-BadBatter=Batter('Bad','Batter',40,'Left','Left',40)
+BobGibson=Pitcher('Bob','Gibson','1935-11-09','Right','Right',98)
+StanMusial=Batter('Stan','Musical','1920-11-21','Right','Right',94)
+BadBatter=Batter('Bad','Batter','1980-01-01','Left','Left',40)
 atBat(BobGibson,StanMusial)
 ##PitchCount=0
 
