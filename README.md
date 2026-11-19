@@ -108,3 +108,21 @@ The simulation generates:
 ## License
 
 This project is open source and available for educational purposes.
+
+## Famous Baseball Quotes
+
+> "It ain't over till it's over." — Yogi Berra
+
+> "Baseball is ninety percent mental and the other half is physical." — Yogi Berra
+
+> "You can observe a lot by just watching." — Yogi Berra
+
+> "The only thing that matters is the score after the last out." — Reggie Jackson
+
+> "Every strike brings me closer to the next home run." — Babe Ruth
+
+> "It's like deja vu all over again." — Yogi Berra
+
+> "The game is played one pitch at a time." — Unknown
+
+> "Baseball is a game of failure. Even the best hitters fail 70% of the time." — Unknown
