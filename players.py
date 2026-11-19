@@ -1,5 +1,5 @@
 """
-Baseball players module containing fictional MLB players and retired St. Louis Cardinals for the baseball simulation.
+Baseball players module containing fictional MLB players, retired St. Louis Cardinals, and retired Chicago Cubs for the baseball simulation.
 """
 
 from atbat import Pitcher, Batter
@@ -129,6 +129,68 @@ class MarcMcGwire(Batter):
         super(MarcMcGwire, self).__init__('Marc', 'McGwire', 56, 'Right', 'Right', 99)
 
 
+# Retired Chicago Cubs Pitchers
+class GregMaddux(Pitcher):
+    """Mad Dog, Cubs ace with surgical precision and control"""
+    def __init__(self):
+        super(GregMaddux, self).__init__('Greg', 'Maddux', 57, 'Right', 'Right', 96)
+
+
+class KerryWood(Pitcher):
+    """Woody, Cubs fireballer with devastating fastball"""
+    def __init__(self):
+        super(KerryWood, self).__init__('Kerry', 'Wood', 52, 'Right', 'Right', 97)
+
+
+class RonSanto(Pitcher):
+    """Santo Claus, Cubs legend with heart and determination"""
+    def __init__(self):
+        super(RonSanto, self).__init__('Ron', 'Santo', 49, 'Right', 'Right', 91)
+
+
+class FergiePaint(Pitcher):
+    """Ferguson Jenkins reimagined, Cubs workhorse pitcher"""
+    def __init__(self):
+        super(FergiePaint, self).__init__('Fergie', 'Paint', 51, 'Right', 'Right', 93)
+
+
+class BillHolden(Pitcher):
+    """Bill Hands reimagined, Cubs reliable starter"""
+    def __init__(self):
+        super(BillHolden, self).__init__('Bill', 'Holden', 54, 'Left', 'Left', 89)
+
+
+# Retired Chicago Cubs Batters
+class SammySofaThe(Batter):
+    """Sammy Sosa reimagined, Cubs slugger extraordinaire"""
+    def __init__(self):
+        super(SammySofaThe, self).__init__('Sammy', 'SofaThe', 56, 'Right', 'Right', 98)
+
+
+class ErnestBanksALot(Batter):
+    """Ernie Banks reimagined, Mr. Cub with infectious enthusiasm"""
+    def __init__(self):
+        super(ErnestBanksALot, self).__init__('Ernest', 'BanksALot', 52, 'Right', 'Right', 94)
+
+
+class RynoSaurus(Batter):
+    """Ryne Sandberg reimagined, Cubs second base legend"""
+    def __init__(self):
+        super(RynoSaurus, self).__init__('Ryno', 'Saurus', 58, 'Right', 'Right', 95)
+
+
+class MarkGraceNote(Batter):
+    """Mark Grace reimagined, Cubs first base maestro"""
+    def __init__(self):
+        super(MarkGraceNote, self).__init__('Mark', 'GraceNote', 55, 'Left', 'Left', 92)
+
+
+class AndreeDawson(Batter):
+    """Andre Dawson reimagined, The Hawk soars over Wrigley"""
+    def __init__(self):
+        super(AndreeDawson, self).__init__('Andree', 'Dawson', 60, 'Right', 'Right', 93)
+
+
 # Player roster
 PITCHERS = [
     ThunderStrike(),
@@ -141,6 +203,11 @@ PITCHERS = [
     OzzieSmiths(),
     LouBrock(),
     RogersHornsby(),
+    GregMaddux(),
+    KerryWood(),
+    RonSanto(),
+    FergiePaint(),
+    BillHolden(),
 ]
 
 BATTERS = [
@@ -154,6 +221,11 @@ BATTERS = [
     ScottRolen(),
     JimEdmonds(),
     MarcMcGwire(),
+    SammySofaThe(),
+    ErnestBanksALot(),
+    RynoSaurus(),
+    MarkGraceNote(),
+    AndreeDawson(),
 ]
 
 ALL_PLAYERS = PITCHERS + BATTERS
