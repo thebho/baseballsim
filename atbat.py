@@ -224,10 +224,27 @@ def atBat(pitcher,batter):
     
 
 
-        
+# Import fictional players from players module
+from players import PITCHERS, BATTERS, ALL_PLAYERS
+
+# Original test players
 BobGibson=Pitcher('Bob','Gibson',20,'Right','Right',98)
 StanMusial=Batter('Stan','Musical',20,'Right','Right',94)
 BadBatter=Batter('Bad','Batter',40,'Left','Left',40)
+
+# Demonstrate usage with new fictional players
+print "\n=== New Fictional Players Added ==="
+print "Pitchers:"
+for pitcher in PITCHERS:
+    print "  - %s (Rating: %d)" % (pitcher.name, pitcher.getRating())
+
+print "\nBatters:"
+for batter in BATTERS:
+    print "  - %s (Contact: %d)" % (batter.name, batter.getRating())
+
+print "\nTotal players in roster: %d" % len(ALL_PLAYERS)
+
+# Run at-bat with original players
 atBat(BobGibson,StanMusial)
 ##PitchCount=0
 
@@ -243,7 +260,3 @@ while Result==False:
             Result=True
         else:
             print 'Batter Swings and Misses'
-
-
-
-
