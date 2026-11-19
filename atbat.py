@@ -165,6 +165,151 @@ class Swing(object):
             else: return False
         else: return True
 
+
+class HitOutcome(object):
+    """
+    Determines the outcome of a ball in play based on batter, pitcher, and pitch location.
+    Calculates exit velocity, launch angle, and determines hit type.
+    """
+    def __init__(self, batter, pitcher, pitch):
+        """
+        Initializes a hit outcome calculation.
+        
+        batter=A Batter object
+        pitcher=A Pitcher object
+        pitch=A Pitch object
+        """
+        self.batter = batter
+        self.pitcher = pitcher
+        self.pitch = pitch
+        self.pitchLocation = pitch.getLocation()
+        
+        # Calculate contact quality based on pitch location
+        self.contactQuality = self._calculateContactQuality()
+        
+        # Generate exit velocity (0-100 scale)
+        self.exitVelocity = self._generateExitVelocity()
+        
+        # Generate launch angle (0-90 degrees)
+        self.launchAngle = self._generateLaunchAngle()
+    
+    def _calculateContactQuality(self):
+        """
+        Calculates contact quality based on pitch location.
+        Center of strike zone = better contact (100)
+        Edges of strike zone = worse contact (lower values)
+        """
+        x, y = self.pitchLocation
+        
+        # Distance from center of strike zone (0, 0)
+        # Strike zone center is approximately at (0, -0.25)
+        centerX, centerY = 0, -0.25
+        distance = math.sqrt((x - centerX)**2 + (y - centerY)**2)
+        
+        # Maximum distance within strike zone is approximately 1.2
+        # Contact quality decreases with distance from center
+        contactQuality = max(50, 100 - (distance * 40))
+        
+        return contactQuality
+    
+    def _generateExitVelocity(self):
+        """
+        Generates exit velocity (0-100 scale) influenced by:
+        - Batter contact rating
+        - Contact quality
+        - Random variation
+        """
+        batterContact = self.batter.getRating()
+        
+        # Base exit velocity from batter contact rating (scaled to 0-100)
+        baseVelocity = (batterContact / 99.0) * 100
+        
+        # Adjust based on contact quality
+        contactAdjustment = (self.contactQuality / 100.0) * 20
+        
+        # Add random variation (±10)
+        randomVariation = random.uniform(-10, 10)
+        
+        exitVelocity = baseVelocity + contactAdjustment + randomVariation
+        
+        # Clamp between 0 and 100
+        exitVelocity = max(0, min(100, exitVelocity))
+        
+        return exitVelocity
+    
+    def _generateLaunchAngle(self):
+        """
+        Generates launch angle (0-90 degrees) with some randomness.
+        Influenced by pitch location and random variation.
+        """
+        x, y = self.pitchLocation
+        
+        # Pitches higher in zone tend to produce higher launch angles
+        # Pitches lower in zone tend to produce lower launch angles
+        baseAngle = 20 + (y + 2.0) * 5  # Adjust based on vertical location
+        
+        # Add random variation (±15 degrees)
+        randomVariation = random.uniform(-15, 15)
+        
+        launchAngle = baseAngle + randomVariation
+        
+        # Clamp between 0 and 90
+        launchAngle = max(0, min(90, launchAngle))
+        
+        return launchAngle
+    
+    def getHitOutcome(self):
+        """
+        Determines hit type based on exit velocity and launch angle.
+        Returns: 'Single', 'Double', 'Triple', 'HomeRun', or 'Out'
+        """
+        exitVel = self.exitVelocity
+        launchAng = self.launchAngle
+        
+        # Ground ball (0-15 degrees)
+        if launchAng < 15:
+            if exitVel > 70:
+                return 'Single'
+            else:
+                return 'Out'
+        
+        # Line drive (15-35 degrees)
+        elif launchAng < 35:
+            if exitVel > 80:
+                return 'Double'
+            elif exitVel > 65:
+                return 'Single'
+            else:
+                return 'Out'
+        
+        # Fly ball (35-50 degrees)
+        elif launchAng < 50:
+            if exitVel > 90:
+                return 'HomeRun'
+            elif exitVel > 75:
+                return 'Double'
+            elif exitVel > 60:
+                return 'Single'
+            else:
+                return 'Out'
+        
+        # Pop-up (50-90 degrees)
+        else:
+            if exitVel > 95:
+                return 'HomeRun'
+            else:
+                return 'Out'
+    
+    def getDetails(self):
+        """
+        Returns a detailed string describing the hit outcome.
+        """
+        hitType = self.getHitOutcome()
+        details = "Exit Velocity: {:.1f}, Launch Angle: {:.1f}°, Result: {}".format(
+            self.exitVelocity, self.launchAngle, hitType)
+        return details
+
+
 ##def plotPitches(pitcher,pitch,result,pitchCount):
 ##
 ##    x,y=pitch.getLocation()
@@ -184,6 +329,7 @@ def atBat(pitcher,batter):
     pitchCount=0
     inPlay=False
     pitchList=[]
+    result=None
 
     while balls<4 and strikes<3 and inPlay==False:
         print balls,strikes
@@ -199,11 +345,22 @@ def atBat(pitcher,batter):
                 inPlay=True
 ##                plotPitches(pitcher,P,None,pitchCount)
                 print 'Ball in play'
+                # Calculate hit outcome
+                hitOutcome = HitOutcome(batter, pitcher, P)
+                result = hitOutcome.getHitOutcome()
+                print hitOutcome.getDetails()
+                print result + '!'
             else:
                 strikes+=1
                 print 'Swinging Strike'
-    if balls==4:print 'Base on Balls'
-    elif strikes==3: print 'Strike Out'
+    
+    if balls==4:
+        print 'Base on Balls'
+        result = 'Walk'
+    elif strikes==3:
+        print 'Strike Out'
+        result = 'Strikeout'
+    
     print pitchList
     pitchW,pitchH,labels,pi=[],[],[],0
     for i in pitchList:
@@ -220,6 +377,8 @@ def atBat(pitcher,batter):
     pylab.xlim(-2.5,2.5)
     pylab.ylim(STRIKE_HEIGHT)
     pylab.show()
+    
+    return result
         
     
 
@@ -243,7 +402,3 @@ while Result==False:
             Result=True
         else:
             print 'Batter Swings and Misses'
-
-
-
-
