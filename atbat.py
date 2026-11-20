@@ -196,9 +196,9 @@ class Pitch(object):
         """
         self.pitcher=pitcher
         self.location=random.uniform(STRIKE_WIDTH[0],STRIKE_WIDTH[1]),random.uniform(STRIKE_HEIGHT[0],STRIKE_HEIGHT[1])
-        self.pitch=random.choice(self.pitcher.pitchDict.keys())
+        self.pitch=random.choice(list(self.pitcher.pitchDict.keys()))
         self.pitchQuality=100-(10*random.random())
-        print self.pitch
+        print(self.pitch)
     
     def getPitch(self):
         """
@@ -252,14 +252,14 @@ class Swing(object):
         randomTake=100-100*random.random()
         x,y = Pitch.getLocation(self.currentPitch)
         if -0.4<x<0.4 and -1.0<y<0.5:
-            print 'Swung at strike'
+            print('Swung at strike')
             return True
         elif -0.9<x<0.9 and -2.0<y<2.0 and takePer<randomTake:
             if random.random()>0.5:
-                print 'Swung at borderline pitch'
+                print('Swung at borderline pitch')
                 return True
             else:
-                print 'Didnt swing at borderline pitch'
+                print('Didnt swing at borderline pitch')
                 return False
         else: return False
 
@@ -271,7 +271,7 @@ class Swing(object):
         """
         x,y=Pitch.getLocation(self.currentPitch)
         if -0.6<x<0.6 and -2.0<y<1.5:
-            print 'Made contact down the middle'
+            print('Made contact down the middle')
             return True
         batterRating=self.batter.getRating()
         pitcherAdvantage=self.pitchQuality-batterRating
@@ -309,7 +309,7 @@ def atBat(pitcher,batter):
     pitchList=[]
 
     while balls<4 and strikes<3 and inPlay==False:
-        print balls,strikes
+        print(balls,strikes)
         pitchCount+=1
         P=Pitch(pitcher)
         pitchList.append(P.getLocation())
@@ -321,13 +321,13 @@ def atBat(pitcher,batter):
             if S.swingContact()==True:
                 inPlay=True
 ##                plotPitches(pitcher,P,None,pitchCount)
-                print 'Ball in play'
+                print('Ball in play')
             else:
                 strikes+=1
-                print 'Swinging Strike'
-    if balls==4:print 'Base on Balls'
-    elif strikes==3: print 'Strike Out'
-    print pitchList
+                print('Swinging Strike')
+    if balls==4:print('Base on Balls')
+    elif strikes==3: print('Strike Out')
+    print(pitchList)
     pitchW,pitchH,labels,pi=[],[],[],0
     for i in pitchList:
         pi+=1
@@ -351,18 +351,18 @@ def atBat(pitcher,batter):
 BobGibson=Pitcher('Bob','Gibson','Right','Right',42,"6'1\"",195,'SP','River Cats',42,15,92,88,94,87,251,174,2.91)
 StanMusial=Batter('Stan','Musial','Right','Right',42,"6'0\"",200,'RF','River Cats',6,22,89,72,91,475,3630,1311,0.330)
 BadBatter=Batter('Bad','Batter','Left','Left',40,"5'8\"",160,'DH','River Cats',99,5,35,25,30,5,45,120,0.273)
-atBat(BobGibson,StanMusial)
+# atBat(BobGibson,StanMusial)
 ##PitchCount=0
 
-Result=False
-while Result==False:
-    PitchCount+=1
-    print 'Pitch',PitchCount
-    P=Pitch(BobGibson)
-    S=Swing(BobGibson,P,StanMusial)
-    if S.swingOrTake()==True:
-        if S.swingContact()==True:
-            print 'Batter Swings Contact Made'
-            Result=True
-        else:
-            print 'Batter Swings and Misses'
+# Result=False
+# while Result==False:
+#     PitchCount+=1
+#     print('Pitch',PitchCount)
+#     P=Pitch(BobGibson)
+#     S=Swing(BobGibson,P,StanMusial)
+#     if S.swingOrTake()==True:
+#         if S.swingContact()==True:
+#             print('Batter Swings Contact Made')
+#             Result=True
+#         else:
+#             print('Batter Swings and Misses')

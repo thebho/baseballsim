@@ -58,6 +58,13 @@ PITCHERS = [
     Pitcher("Paul", "Garcia", "Right", "Right", 32, "6'3\"", 218, "SP", "Iron Wolves", 26, 9, 65, 66, 69, 65, 14, 11, 3.29),
     Pitcher("Andrew", "Rodriguez", "Left", "Right", 27, "6'0\"", 195, "RP", "Coastal Kings", 27, 5, 59, 61, 64, 60, 9, 9, 3.65),
     
+    # Additional mid skill pitchers (51-74)
+    Pitcher("Vincent", "Murphy", "Right", "Right", 28, "6'2\"", 210, "SP", "Desert Hawks", 71, 5, 60, 63, 66, 62, 10, 9, 3.78),
+    Pitcher("Wayne", "Peterson", "Left", "Left", 29, "6'1\"", 205, "RP", "Northside Thunder", 72, 6, 62, 64, 67, 63, 11, 10, 3.45),
+    Pitcher("Xavier", "Quinn", "Right", "Right", 27, "6'3\"", 215, "SP", "Bay Breakers", 73, 4, 58, 61, 65, 59, 8, 8, 3.89),
+    Pitcher("Yancy", "Russell", "Left", "Right", 30, "6'0\"", 190, "RP", "Summit Eagles", 74, 7, 64, 65, 68, 64, 12, 9, 3.34),
+    Pitcher("Zachary", "Scott", "Right", "Left", 26, "6'4\"", 225, "SP", "Lakewood Aces", 75, 3, 61, 62, 66, 61, 9, 7, 3.67),
+    
     # High skill pitchers (75-99)
     Pitcher("Christopher", "Lee", "Right", "Right", 31, "6'2\"", 210, "SP", "Desert Hawks", 28, 10, 88, 91, 94, 89, 28, 12, 2.34),
     Pitcher("Kenneth", "Taylor", "Left", "Left", 29, "6'1\"", 205, "RP", "Northside Thunder", 29, 7, 85, 88, 91, 86, 24, 10, 2.67),
