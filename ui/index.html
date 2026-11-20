@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baseball Player Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚾ Baseball Player Generator</h1>
+            <p>Generate and manage random baseball players</p>
+        </header>
+
+        <div class="controls">
+            <button id="addPlayerBtn" class="btn btn-primary">+ Add Random Player</button>
+            <button id="clearAllBtn" class="btn btn-secondary">Clear All</button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-label">Total Players:</span>
+                <span id="totalCount" class="stat-value">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Pitchers:</span>
+                <span id="pitcherCount" class="stat-value">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Batters:</span>
+                <span id="batterCount" class="stat-value">0</span>
+            </div>
+        </div>
+
+        <div id="playersList" class="players-list">
+            <p class="empty-message">No players yet. Click "Add Random Player" to get started!</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
