@@ -225,9 +225,26 @@ def atBat(pitcher,batter):
 
 
         
+# Original players
 BobGibson=Pitcher('Bob','Gibson',20,'Right','Right',98)
 StanMusial=Batter('Stan','Musical',20,'Right','Right',94)
 BadBatter=Batter('Bad','Batter',40,'Left','Left',40)
+
+# New real-world players
+# Pitchers
+WalterJohnson=Pitcher('Walter','Johnson',25,'Right','Right',99)
+SandyKoufax=Pitcher('Sandy','Koufax',28,'Left','Right',97)
+NolanRyan=Pitcher('Nolan','Ryan',30,'Right','Right',96)
+RogerClemens=Pitcher('Roger','Clemens',26,'Right','Right',95)
+JustinVerlander=Pitcher('Justin','Verlander',32,'Right','Right',94)
+
+# Batters
+TyrusCobb=Batter('Tyrus','Cobb',28,'Left','Left',96)
+BabeRuth=Batter('Babe','Ruth',32,'Left','Left',95)
+TedWilliams=Batter('Ted','Williams',35,'Right','Right',93)
+JoeDimaggio=Batter('Joe','DiMaggio',30,'Right','Right',92)
+MickeyMantle=Batter('Mickey','Mantle',27,'Switch','Switch',91)
+
 atBat(BobGibson,StanMusial)
 ##PitchCount=0
 
@@ -243,7 +260,3 @@ while Result==False:
             Result=True
         else:
             print 'Batter Swings and Misses'
-
-
-
-
