@@ -1,14 +1,14 @@
-# Baseball Sim
+# ⚾ Baseball Sim
 
 A baseball simulation project with player generation and management tools.
 
-## Features
+## 🏟️ The Lineup
 
 ### Player Generator (`player_generator.py`)
 
 A Python module for generating random baseball players with realistic attributes.
 
-#### Components
+#### 🎯 On the Roster
 
 - **`SessionPlayerTracker`**: Manages unique jersey numbers for a session
   - `get_unique_jersey(low=1, high=99)`: Returns a unique jersey number in the specified range
@@ -31,7 +31,7 @@ A Python module for generating random baseball players with realistic attributes
 - **`generate_random_player(player_type=None, tracker=None)`**: Generates either a pitcher or batter
   - If `player_type` is `None`, randomly chooses between pitcher and batter
 
-#### Usage
+#### ⚾ At Bat
 
 ```python
 from player_generator import generate_random_pitcher, generate_random_batter, SessionPlayerTracker
@@ -59,13 +59,13 @@ python player_generator.py
 
 A simple, browser-based interface for viewing and generating players.
 
-#### Files
+#### 🎮 The Scoreboard
 
 - **`index.html`**: Main page structure
 - **`app.js`**: Player management and generation logic
 - **`style.css`**: Responsive styling with gradient theme
 
-#### Features
+#### 🏆 Game Features
 
 - **Add Random Player**: Generate a new pitcher or batter with a single click
 - **Player Cards**: Display each player's info and stats in an organized card layout
@@ -74,7 +74,7 @@ A simple, browser-based interface for viewing and generating players.
 - **Remove Players**: Delete individual players or clear all at once
 - **Responsive Design**: Works on desktop and mobile devices
 
-#### Usage
+#### 🎯 Step Up to the Plate
 
 Open `ui/index.html` in any web browser. No server or build process required.
 
@@ -82,7 +82,7 @@ The UI generates players independently using embedded JavaScript logic (not conn
 
 ---
 
-## Project Structure
+## 🏟️ The Field
 
 ```
 .
@@ -94,11 +94,11 @@ The UI generates players independently using embedded JavaScript logic (not conn
 └── README.md               # This file
 ```
 
-## Requirements
+## ⚙️ Requirements
 
 - Python 3.6+ (for `player_generator.py`)
 - Modern web browser (for `ui/`)
 
-## License
+## 📜 License
 
 See LICENSE file for details.
