@@ -225,9 +225,26 @@ def atBat(pitcher,batter):
 
 
         
+# Original players
 BobGibson=Pitcher('Bob','Gibson',20,'Right','Right',98)
 StanMusial=Batter('Stan','Musical',20,'Right','Right',94)
 BadBatter=Batter('Bad','Batter',40,'Left','Left',40)
+
+# New players from various teams
+# Pitchers
+ClaytonKershaw=Pitcher('Clayton','Kershaw',28,'Left','Left',96)  # Los Angeles Dodgers
+MaxScherzer=Pitcher('Max','Scherzer',32,'Right','Right',95)  # Washington Nationals
+JustinVerlander=Pitcher('Justin','Verlander',35,'Right','Right',94)  # Houston Astros
+SallyPepper=Pitcher('Sally','Pepper',26,'Right','Right',88)  # New York Yankees
+
+# Batters
+MikeTrout=Batter('Mike','Trout',27,'Right','Right',97)  # Los Angeles Angels
+ChristianYelich=Batter('Christian','Yelich',28,'Right','Right',95)  # Milwaukee Brewers
+MookieBetts=Batter('Mookie','Betts',28,'Right','Right',96)  # Los Angeles Dodgers
+JoseAltuve=Batter('Jose','Altuve',30,'Right','Right',92)  # Houston Astros
+FreddieFreemanBatter=Batter('Freddie','Freeman',31,'Left','Right',94)  # Atlanta Braves
+NalanRichards=Batter('Nalan','Richards',25,'Left','Left',85)  # Boston Red Sox
+
 atBat(BobGibson,StanMusial)
 ##PitchCount=0
 
@@ -243,7 +260,3 @@ while Result==False:
             Result=True
         else:
             print 'Batter Swings and Misses'
-
-
-
-
